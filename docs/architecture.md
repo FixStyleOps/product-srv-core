@@ -57,3 +57,8 @@ install_step10_finalize.sh
 
 ports/
 product-srv-ports.sh
+
+
+All modules run independently and communicate only through internal docker networks.
+
+
