@@ -1,13 +1,13 @@
 #!/bin/bash
-# PWDBOX – install_step0_cleanup.sh
+# product-srv – install_step0_cleanup.sh
 # System check, cleanup, pre-install diagnostics
 
 echo "=============================================="
-echo " PWDBOX – Step 0: Environment Cleanup & Checks "
+echo " product-srv – Step 0: Environment Cleanup & Checks "
 echo "=============================================="
 
-LOG="/opt/pwdbox-installer/install_step0.log"
-mkdir -p /opt/pwdbox-installer
+LOG="/opt/product-srv-installer/install_step0.log"
+mkdir -p /opt/product-srv-installer
 touch $LOG
 
 log() {
@@ -40,21 +40,13 @@ log "Disk free: ${DISK}"
 # --- Basic tools ---
 log "Checking required tools..."
 
-for tool in docker docker-compose certbot ss systemctl cron jq curl wget; do
+for tool in docker docker-compose ss systemctl cron jq curl wget; do
     if ! command -v $tool >/dev/null 2>&1; then
         warn "$tool is not installed"
     else
         log "$tool OK"
     fi
 done
-
-# --- SSL Certificates ---
-SSL_DIR="/etc/letsencrypt/live/pwdbox.$(cat /opt/pwdbox-zone 2>/dev/null)"
-if [[ -d "$SSL_DIR" ]]; then
-    log "SSL certificate found in: $SSL_DIR"
-else
-    warn "SSL certificates not found, HTTPS will not start"
-fi
 
 # --- Firewall ---
 log "Checking firewall rules..."
@@ -74,6 +66,6 @@ apt upgrade -y >> $LOG 2>&1
 
 log "System update completed."
 
-# --- Save report ---
-log "System diagnostics completed successfully."
-echo "Done. Log saved to $LOG"
+log "Diagnostics finished. Log: $LOG"
+
+
