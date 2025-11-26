@@ -1,6 +1,6 @@
 #!/bin/bash
 # product-srv – install_step2_compose.sh
-# Generate docker-compose.yml for selected zone
+# Generate docker-compose.yml for selected zone (alpha / beta / gamma)
 
 echo "==========================================="
 echo " product-srv – Step 2: Docker Compose Generator"
@@ -14,6 +14,14 @@ echo "Zone: $ZONE"
 echo "Compose file: $COMPOSE"
 
 mkdir -p $BASE
+
+# Randomized external ports by zone
+case "$ZONE" in
+    "alpha") SYNC_PORT=52148;;
+    "beta")  SYNC_PORT=53792;;
+    "gamma") SYNC_PORT=56411;;
+    *) SYNC_PORT=$((30000 + RANDOM % 20000));;
+esac
 
 cat > $COMPOSE <<EOF
 services:
@@ -58,11 +66,13 @@ services:
     container_name: product-${ZONE}-sync
     build: ./zone-sync
     ports:
-      - "$( [[ "$ZONE" == "io" ]] && echo "9060" || ([[ "$ZONE" == "kz" ]] && echo "9061" || echo "9062") ):9060"
+      - "$SYNC_PORT:9060"
     restart: always
 EOF
 
 echo ""
 echo "[OK] Docker Compose generated."
+echo "[OK] External sync port: $SYNC_PORT"
 echo "[OK] File created: $COMPOSE"
 echo ""
+
