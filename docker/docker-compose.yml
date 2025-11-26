@@ -1,0 +1,25 @@
+services:
+
+  product-limiter:
+    container_name: product-${ZONE}-limiter
+    build: ./access-limiter
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+  product-firewall:
+    container_name: product-${ZONE}-firewall
+    build: ./firewall-guard
+    restart: unless-stopped
+
+  product-auth:
+    container_name: product-${ZONE}-auth
+    build: ./web-auth
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  product-backup:
+    container_name: product-${ZONE}-backup
+    build: ./backup-local
+    volum
